@@ -47,7 +47,6 @@
 #import "HNBleDeviceModel.h"
 #import "FFDB.h"
 #import "HNBLEDataManager.h"
-
 #import "HNAspectsStore.h"
 #endif
 

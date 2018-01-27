@@ -19,6 +19,8 @@ typedef void(^SuccessBlock)(id responseObject);
 
 typedef void(^FaildBlock)(NSError *error);
 
+typedef void(^DownSuccessBlock)(id responseObject,NSURL *filePath);
+
 @interface HNRequestManager : NSObject
 
 /**
@@ -70,4 +72,16 @@ typedef void(^FaildBlock)(NSError *error);
                           success:(SuccessBlock)success
                             faild:(FaildBlock)faild;
 
+
+
+/**
+ 文件下载
+
+ @param urlString <#urlString description#>
+ @param success <#success description#>
+ @param faild <#faild description#>
+ */
++(void)downWithFileUrlString:(NSString *)urlString
+                     success:(DownSuccessBlock)success
+                       faild:(FaildBlock)faild;
 @end

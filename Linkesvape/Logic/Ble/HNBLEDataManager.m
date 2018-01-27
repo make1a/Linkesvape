@@ -30,6 +30,10 @@
         {
             
         }
+        case 0x0F: //芯片升级
+        {
+            [self getDeviceUpdataStatus:data];
+        }
         default:
             break;
     }
@@ -38,14 +42,22 @@
     
 }
 
-
 #pragma  mark - 被拦截的action
 + (HNGetDeviceInfoCode *)getDeviceInfoModel:(NSData *)data{
    HNGetDeviceInfoCode *code = [HNGetDeviceInfoCode AnalysisDataToModel:data BytesArray:@[@1,@1,@1,@1,@6,@1,@1]];
     DLog(@"%@",code);
     return code;
-    
 }
+
+//主控芯片升级返回状态
++(BOOL)getDeviceUpdataStatus:(NSData *)data{
+    if (data) {
+        return YES;
+    }
+    return NO;
+}
+
+
 
 
 

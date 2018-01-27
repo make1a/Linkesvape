@@ -27,8 +27,11 @@
 
 
 
+
 /**
  开始OTA
+
+ @return mac地址
  */
-+ (void)sendOTACode;
++ (NSString *)sendOTACode;
 @end

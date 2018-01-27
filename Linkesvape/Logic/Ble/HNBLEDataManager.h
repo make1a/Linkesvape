@@ -21,7 +21,7 @@
 #pragma mark - 数据解析
 
 + (HNGetDeviceInfoCode *)getDeviceInfoModel:(NSData *)data;
-
++ (BOOL)getDeviceUpdataStatus:(NSData *)data; 
 
 #pragma mark - 数据发送
 /**

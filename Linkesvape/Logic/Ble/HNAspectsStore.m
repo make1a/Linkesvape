@@ -23,4 +23,15 @@
         }
     } error:NULL];
 }
+
++(void)getDeviceUpdateStatus:(void (^)(BOOL isSuccess))handlerBlock{
+    
+    [object_getClass([HNBLEDataManager class]) aspect_hookSelector:@selector(getDeviceUpdataStatus:) withOptions:AspectPositionAfter usingBlock:^(id<AspectInfo> aspectInfo,NSData *data){
+        BOOL isSuccess;
+        [aspectInfo.originalInvocation getReturnValue:&isSuccess];
+        if (handlerBlock) {
+            handlerBlock(isSuccess);
+        }
+    } error:NULL];
+}
 @end

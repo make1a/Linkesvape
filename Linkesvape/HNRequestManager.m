@@ -36,10 +36,10 @@
     }
     
     /************** 项目私有语言设置 *************/
-   NSString * language = [[NSUserDefaults standardUserDefaults]valueForKey:HNUserDefaultLanguage];
+    NSString * language = [[NSUserDefaults standardUserDefaults]valueForKey:HNUserDefaultLanguage];
     [manager.requestSerializer setValue:language forHTTPHeaderField:@"Accept-Language"];
     
-   NSString *token = [[NSUserDefaults standardUserDefaults]valueForKey:@"token"];
+    NSString *token = [[NSUserDefaults standardUserDefaults]valueForKey:@"token"];
     if (token.length >0) {
         [manager.requestSerializer setValue:token forHTTPHeaderField:@"authorization"];
     }
@@ -158,6 +158,59 @@
         
         faild(error);
     }];
+}
+
+/*
+ 第一个参数:请求对象
+ 第二个参数:progress 进度回调
+ 第三个参数:destination--(downloadTask-)
+ 在该block中告诉AFN应该把文件存放在什么位置,AFN内部会自动的完成文件的剪切处理
+ targetPath:文件的临时存储路径(tmp)
+ response:响应头信息
+ 返回值:文件的最终存储路径
+ 第四个参数:completionHandler 完成之后的回调
+ filePath:文件路径 == 返回值
+ */
++(void)downWithFileUrlString:(NSString *)urlString
+                     success:(DownSuccessBlock)success
+                       faild:(FaildBlock)faild{
+    
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    NSURLSessionDownloadTask *download = [manager downloadTaskWithRequest:request progress:^(NSProgress * _Nonnull downloadProgress){
+        
+        //进度回调,可在此监听下载进度(已经下载的大小/文件总大小)
+        NSLog(@"%f",1.0 * downloadProgress.completedUnitCount / downloadProgress.totalUnitCount);
+        
+    } destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response){
+        
+        NSString *fullPath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory,NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:response.suggestedFilename];
+        
+        NSLog(@"targetPath:%@",targetPath);
+        NSLog(@"fullPath:%@",fullPath);
+        
+        return [NSURL fileURLWithPath:fullPath];
+        
+    } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath,
+                          NSError * _Nullable error) {
+        if (!error) {
+            if (success) {
+                success(response,filePath);
+            }
+        }else{
+            faild(error);
+        }
+        NSLog(@"filePath:%@",filePath);
+        
+    }];
+    
+    [download resume];
+    
 }
 
 @end

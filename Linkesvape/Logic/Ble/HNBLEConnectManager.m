@@ -7,7 +7,7 @@
 //
 
 #import "HNBLEConnectManager.h"
-
+#import "NSTimer+MKTimer.h"
 NSString *const filterConditionName =  @"linkedvape";
 NSString *const kNotificationBleStatePoweredOn = @"kNotificationBleStatePoweredOn";
 NSString *const kNotificationBleStatePoweredOff = @"kNotificationBleStatePoweredOff";
@@ -30,6 +30,13 @@ NSString *const kNotificationConnectDeviceOutTime = @"kNotificationConnectDevice
 
 //按照mac地址连接设备的定时器
 @property (nonatomic,strong)NSTimer * connectWithMacTimer;
+
+@property (nonatomic,assign)BOOL isOTA;
+
+
+@property (nonatomic,copy,readwrite)NSString *softVersion;
+
+@property (nonatomic,strong)CBCharacteristic *softVersionCharacteristic;
 
 @end
 
@@ -85,35 +92,42 @@ NSString *const kNotificationConnectDeviceOutTime = @"kNotificationConnectDevice
 }
 
 //根据mac地址去连接已经搜到的设备
-- (void)connectDeviceWithMacAddress:(NSString *)mac{
+- (void)connectDeviceWithMacAddress:(NSString *)mac andOutTimer:(NSInteger)outTime{
+
+    [self scan];
+    
     connectNumber = 0;
     if (!self.connectWithMacTimer) {
-        self.connectWithMacTimer = [NSTimer scheduledTimerWithTimeInterval:1.f target:self selector:@selector(timerConnectDevice:) userInfo:mac repeats:YES];
+        self.connectWithMacTimer = [NSTimer mk_scheduledTimerWithTimeInterval:1.f repeats:YES block:^{
+            _weakself;
+            if (connectNumber == outTime) {
+                [weakself.connectWithMacTimer invalidate];
+                weakself.connectWithMacTimer = nil;
+                [[NSNotificationCenter defaultCenter]postNotificationName:kNotificationConnectDeviceOutTime object:nil];
+            }
+            
+            connectNumber ++;
+            for (HNBleDeviceModel *model in weakself.deviceList) {
+                if ([model.macAddress isEqualToString:mac]) {
+                    [weakself connectDevice:model.peripheral];
+                    connectNumber = 0;
+                    [weakself.connectWithMacTimer invalidate];
+                    weakself.connectWithMacTimer = nil;
+                    break;
+                }
+            }
+        }];
     }else{
         [self.connectWithMacTimer invalidate];
         self.connectWithMacTimer  = nil;
     }
     
 }
-- (void)timerConnectDevice:(NSTimer *)timer{
-    _weakself;
-    NSString *mac = timer.userInfo;
-    if (connectNumber == 3) {
-        [weakself.connectWithMacTimer invalidate];
-        weakself.connectWithMacTimer = nil;
-        [[NSNotificationCenter defaultCenter]postNotificationName:kNotificationConnectDeviceOutTime object:nil];
-    }
-    
-    connectNumber ++;
-    for (HNBleDeviceModel *model in weakself.deviceList) {
-        if ([model.macAddress isEqualToString:mac]) {
-            [weakself connectDevice:model.peripheral];
-            connectNumber = 0;
-            [weakself.connectWithMacTimer invalidate];
-            weakself.connectWithMacTimer = nil;
-            break;
-        }
-    }
+
+- (void)connectWithOTA{
+    self.isOTA = YES;
+    [self stopScan];
+    [self scan];
 }
 
 - (void)babyDelegate{
@@ -140,7 +154,16 @@ NSString *const kNotificationConnectDeviceOutTime = @"kNotificationConnectDevice
     //过滤器
     //设置查找设备的过滤器
     [self.baby setFilterOnDiscoverPeripherals:^BOOL(NSString *peripheralName, NSDictionary *advertisementData, NSNumber *RSSI) {
-//        DLog(@"peripheralName====%@",peripheralName);
+        DLog(@"peripheralName====%@",peripheralName);
+        
+        if (self.isOTA == YES) {
+            if ([peripheralName isEqualToString:@"EDVAPE_DFU"]) {
+                DLog(@"kCBAdvDataManufacturerData===%@",advertisementData);
+                return YES;
+            }
+        }
+
+        
         NSData *data = advertisementData[@"kCBAdvDataManufacturerData"];
         if (data.length >= 26) {
             
@@ -158,6 +181,19 @@ NSString *const kNotificationConnectDeviceOutTime = @"kNotificationConnectDevice
 //        DLog(@"搜索到了设备:%@",peripheral);
         DLog(@"ader ======== %@",advertisementData);
         
+        if (weakself.isOTA == YES) {
+            //OTA模式
+            if ([advertisementData[@"kCBAdvDataLocalName"] isEqualToString:@"EDVAPE_DFU"]) {
+                weakself.isOTA = NO;
+//                [weakself connectDevice:peripheral];
+                [weakself stopScan];
+                weakself.baby.having(peripheral).connectToPeripherals().begin();
+                DLog(@"*******************正在连接OTA模式下的设备*************************");
+                return ;
+            }
+        }
+
+        
         if (![weakself isContain:peripheral]) {
             NSData *data = advertisementData[@"kCBAdvDataManufacturerData"];
             HNBleDeviceModel *device = [[HNBleDeviceModel alloc]initWithData:data];
@@ -174,7 +210,7 @@ NSString *const kNotificationConnectDeviceOutTime = @"kNotificationConnectDevice
     }];
     
     [self.baby setFilterOnConnectToPeripherals:^BOOL(NSString *peripheralName, NSDictionary *advertisementData, NSNumber *RSSI) {
-        if ([peripheralName hasPrefix:filterConditionName]) {
+        if ([peripheralName hasPrefix:filterConditionName] || [advertisementData[@"kCBAdvDataLocalName"] isEqualToString:@"EDVAPE_DFU"]) {
             return YES;
         }
         return NO;
@@ -182,10 +218,15 @@ NSString *const kNotificationConnectDeviceOutTime = @"kNotificationConnectDevice
     
     //连接成功
     [self.baby setBlockOnConnected:^(CBCentralManager *central, CBPeripheral *peripheral) {
+        
         DLog(@"~~~~~~~~~~~~~ 连接成功 ~~~~~~~~~~~~~~~~~~\n%@",peripheral);
-        for (HNBleDeviceModel *model in weakself.deviceList) {
-            if ([model.peripheral isEqual:peripheral]) {
-                weakself.currentDevice = model;
+        if ([peripheral.name isEqualToString:@"EDVAPE_DFU"]) { //OTA
+            
+        }else{
+            for (HNBleDeviceModel *model in weakself.deviceList) {
+                if ([model.peripheral isEqual:peripheral]) {
+                    weakself.currentDevice = model;
+                }
             }
         }
         if (weakself.delegate && [weakself.delegate respondsToSelector:@selector(connectDeviceSucceed:)]) {
@@ -224,18 +265,34 @@ NSString *const kNotificationConnectDeviceOutTime = @"kNotificationConnectDevice
                 }
             }
             
+        }else if ([service.UUID isEqual:[CBUUID UUIDWithString:@"180A"]]){ //设备信息
+            
+            for (CBCharacteristic *c in service.characteristics) {
+                if ([c.UUID isEqual:[CBUUID UUIDWithString:@"2A28"]]) {
+                    
+                    weakself.softVersionCharacteristic = c;
+                    [peripheral readValueForCharacteristic:c];
+                    
+                 }
+            }
+            
         }
     }];
     
     //设置读取characteristics的委托
     [self.baby setBlockOnReadValueForCharacteristic:^(CBPeripheral *peripheral, CBCharacteristic *characteristics, NSError *error) {
-        //        NSLog(@"characteristic name:%@ value is:%@",characteristics.UUID,characteristics.value);
+                NSLog(@"characteristic name:%@ value is:%@",characteristics.UUID,characteristics.value);
+        if ([weakself.softVersionCharacteristic isEqual:characteristics]) {
+            NSString *softVersion = [NSString ascilNumberToString:[NSString convertDataToHexStr:characteristics.value]];
+            weakself.softVersion = softVersion;
+        }
     }];
     
     
     //断开连接
     [self.baby setBlockOnDisconnect:^(CBCentralManager *central, CBPeripheral *peripheral, NSError *error) {
         DLog(@"=============断开连接==============");
+        DLog(@"error:%@ \n%@",error,error.localizedDescription);
         weakself.currentDevice = nil;
         if (weakself.delegate && [weakself.delegate respondsToSelector:@selector(disConnectDevice:errro:)]) {
             [weakself.delegate disConnectDevice:peripheral errro:error];

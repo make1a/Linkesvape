@@ -176,7 +176,7 @@
                 cell.pressConnectBlock = ^{
                     [MBProgressHUD showMessage:NSLocalizedString(@"正在连接", nil)];
                     [[HNBLEConnectManager shareInstance]cancelAllperipheral];
-                    [[HNBLEConnectManager shareInstance]connectDeviceWithMacAddress:model.macAddress];
+                    [[HNBLEConnectManager shareInstance]connectDeviceWithMacAddress:model.macAddress andOutTimer:3];
                 };
             }
             if ([model.macAddress isEqualToString:[HNBLEConnectManager shareInstance].currentDevice.macAddress]) { //当前连接设备

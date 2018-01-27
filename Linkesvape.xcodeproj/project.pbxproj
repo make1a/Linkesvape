@@ -20,7 +20,9 @@
 		262B23CB200F511B000A31B3 /* LaunchScreen_En.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 262B23CA200F511B000A31B3 /* LaunchScreen_En.storyboard */; };
 		262B23CC200F512C000A31B3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 262B23CE200F512C000A31B3 /* InfoPlist.strings */; };
 		262B23D1200F5591000A31B3 /* LaunchScreen_Ch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 262B23D0200F5591000A31B3 /* LaunchScreen_Ch.storyboard */; };
-		26309E822015CA320075B69C /* JQ_SDK14_DFU_APP_20180119.zip in Resources */ = {isa = PBXBuildFile; fileRef = 26309E812015CA320075B69C /* JQ_SDK14_DFU_APP_20180119.zip */; };
+		262BA99020197BA70010CFCE /* HNGetDeviceVersionCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 262BA98F20197BA70010CFCE /* HNGetDeviceVersionCode.m */; };
+		262BA9922019D9720010CFCE /* JQ_SDK14_DFU_APP_20180125_V1.4.0.zip in Resources */ = {isa = PBXBuildFile; fileRef = 262BA9912019D9710010CFCE /* JQ_SDK14_DFU_APP_20180125_V1.4.0.zip */; };
+		262BA9942019D9810010CFCE /* JQ_SDK14_DFU_APP_20180125_V1.5.0.zip in Resources */ = {isa = PBXBuildFile; fileRef = 262BA9932019D9810010CFCE /* JQ_SDK14_DFU_APP_20180125_V1.5.0.zip */; };
 		26309E872015CB450075B69C /* HNOTAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26309E862015CB450075B69C /* HNOTAViewController.m */; };
 		26309E8B2015CCA60075B69C /* HNOTACell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26309E892015CCA60075B69C /* HNOTACell.m */; };
 		26309E8C2015CCA60075B69C /* HNOTACell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26309E8A2015CCA60075B69C /* HNOTACell.xib */; };
@@ -204,7 +206,10 @@
 		262B23CD200F512C000A31B3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		262B23CF200F512E000A31B3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		262B23D0200F5591000A31B3 /* LaunchScreen_Ch.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen_Ch.storyboard; sourceTree = "<group>"; };
-		26309E812015CA320075B69C /* JQ_SDK14_DFU_APP_20180119.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = JQ_SDK14_DFU_APP_20180119.zip; sourceTree = "<group>"; };
+		262BA98E20197BA70010CFCE /* HNGetDeviceVersionCode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HNGetDeviceVersionCode.h; sourceTree = "<group>"; };
+		262BA98F20197BA70010CFCE /* HNGetDeviceVersionCode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HNGetDeviceVersionCode.m; sourceTree = "<group>"; };
+		262BA9912019D9710010CFCE /* JQ_SDK14_DFU_APP_20180125_V1.4.0.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = JQ_SDK14_DFU_APP_20180125_V1.4.0.zip; sourceTree = "<group>"; };
+		262BA9932019D9810010CFCE /* JQ_SDK14_DFU_APP_20180125_V1.5.0.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = JQ_SDK14_DFU_APP_20180125_V1.5.0.zip; sourceTree = "<group>"; };
 		26309E852015CB450075B69C /* HNOTAViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HNOTAViewController.h; sourceTree = "<group>"; };
 		26309E862015CB450075B69C /* HNOTAViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HNOTAViewController.m; sourceTree = "<group>"; };
 		26309E882015CCA60075B69C /* HNOTACell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HNOTACell.h; sourceTree = "<group>"; };
@@ -795,7 +800,8 @@
 		269FA16C1FF1FE1100D4F844 = {
 			isa = PBXGroup;
 			children = (
-				26309E812015CA320075B69C /* JQ_SDK14_DFU_APP_20180119.zip */,
+				262BA9932019D9810010CFCE /* JQ_SDK14_DFU_APP_20180125_V1.5.0.zip */,
+				262BA9912019D9710010CFCE /* JQ_SDK14_DFU_APP_20180125_V1.4.0.zip */,
 				26705FA3200DC93300624085 /* Localizable.strings */,
 				262B23CE200F512C000A31B3 /* InfoPlist.strings */,
 				269FA1771FF1FE1100D4F844 /* Linkesvape */,
@@ -1211,6 +1217,8 @@
 				2648F8FE20046BAB009E761E /* HNGetDeviceInfoCode.m */,
 				26309E8D2015CF530075B69C /* HNDFUModel.h */,
 				26309E8E2015CF530075B69C /* HNDFUModel.m */,
+				262BA98E20197BA70010CFCE /* HNGetDeviceVersionCode.h */,
+				262BA98F20197BA70010CFCE /* HNGetDeviceVersionCode.m */,
 			);
 			path = CodeModel;
 			sourceTree = "<group>";
@@ -1350,7 +1358,6 @@
 				2632413E1FFCC6C8009D3B04 /* HNNameEditCell.xib in Resources */,
 				2643FDE51FF3378C00220F33 /* SkinTheme.plist in Resources */,
 				26D5D4A0201074AC006D187D /* d1242x2208.png in Resources */,
-				26309E822015CA320075B69C /* JQ_SDK14_DFU_APP_20180119.zip in Resources */,
 				269FA1821FF1FE1100D4F844 /* Assets.xcassets in Resources */,
 				262B23D1200F5591000A31B3 /* LaunchScreen_Ch.storyboard in Resources */,
 				26D5D49E20107485006D187D /* ed1242x2208.png in Resources */,
@@ -1359,7 +1366,9 @@
 				263241431FFCC99C009D3B04 /* HNConsoleSliderCell.xib in Resources */,
 				26D3F06F1FF489D700650678 /* HNMainTableHeadView.xib in Resources */,
 				262B2399200F348C000A31B3 /* a.png in Resources */,
+				262BA9942019D9810010CFCE /* JQ_SDK14_DFU_APP_20180125_V1.5.0.zip in Resources */,
 				26309E8C2015CCA60075B69C /* HNOTACell.xib in Resources */,
+				262BA9922019D9720010CFCE /* JQ_SDK14_DFU_APP_20180125_V1.4.0.zip in Resources */,
 				262B23CB200F511B000A31B3 /* LaunchScreen_En.storyboard in Resources */,
 				262B23CC200F512C000A31B3 /* InfoPlist.strings in Resources */,
 				269FA5621FF1FEB800D4F844 /* HMImagePicker.bundle in Resources */,
@@ -1534,6 +1543,7 @@
 				269FA5601FF1FEB800D4F844 /* HMImageGridViewController.m in Sources */,
 				26309E8F2015CF530075B69C /* HNDFUModel.m in Sources */,
 				2643FE1D1FF373CE00220F33 /* HNFindPwdContainerView.m in Sources */,
+				262BA99020197BA70010CFCE /* HNGetDeviceVersionCode.m in Sources */,
 				26161EFB1FFB188C00E2BC82 /* HNSettingsCell.m in Sources */,
 				2643FE051FF33B3D00220F33 /* MASLayoutConstraint.m in Sources */,
 				269FA5691FF1FEB800D4F844 /* JJCPayCodeTextFieldCell.m in Sources */,

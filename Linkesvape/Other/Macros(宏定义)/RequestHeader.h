@@ -44,6 +44,8 @@
 #define PlayList        @"/account/getPlayMode"         // 播放列表
 #define ModelList        @"/account/getModeList"         // 系统模式列表
 #define AddToPlayList        @"/account/addToPlay"
+#define GetDeviceVersion        @"/account/getDeviceVersion" //获取设备版本
+
 #define StartLive        @"/live/startLive"         // 开始直播
 #define StopLive         @"/live/stopLive"          // 结束直播
 #define AnchorHeartbeat  @"/live/anchorHeartbeat"   // 主播心跳 （暂时为免费心跳）

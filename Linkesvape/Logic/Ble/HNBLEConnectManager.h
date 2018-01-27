@@ -56,6 +56,15 @@ extern NSString *const kNotificationConnectDeviceOutTime;
 @property (nonatomic,weak)id <HNBleConnectDelegate> delegate;
 
 
+//************************项目定制属性******************************
+
+/**
+ 固件版本
+ */
+@property (nonatomic,copy,readonly)NSString *softVersion;
+
+
+
 + (HNBLEConnectManager *)shareInstance;
 
 #pragma mark - 连接操作
@@ -65,12 +74,15 @@ extern NSString *const kNotificationConnectDeviceOutTime;
 - (void)cancelPeripheral:(CBPeripheral *)peripheral;
 - (void)cancelAllperipheral;
 
+
+- (void)connectWithOTA;
 /**
  根据mac地址搜索周围广播连接设备
 
  @param mac macAddress
+ @param outTime 超时时间
  */
-- (void)connectDeviceWithMacAddress:(NSString *)mac;
+- (void)connectDeviceWithMacAddress:(NSString *)mac andOutTimer:(NSInteger)outTime;
 #pragma mark - 数据读写
 - (void)writeValueToDevice:(NSData *)data;
 @end
