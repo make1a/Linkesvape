@@ -10,6 +10,7 @@
 #import "HNOTACell.h"
 #import "HNDFUModel.h"
 #import "NSTimer+MKTimer.h"
+#import "HNPreUpdateCode.h"
 @import iOSDFULibrary;
 
 @interface HNOTAViewController ()<UITableViewDelegate,UITableViewDataSource,LoggerDelegate,DFUProgressDelegate,DFUServiceDelegate,HNBleConnectDelegate>
@@ -26,14 +27,15 @@
 @property (nonatomic,assign)NSInteger currentRoundNumber;
 /**发包定时器*/
 @property (nonatomic,strong) NSTimer *timer;
-
-
-
-
 //mac地址
 @property (nonatomic,copy)NSString * macAddress;
 
+//连接定时器
 @property (nonatomic,strong)NSTimer * connectDeviceTimer;
+//接收信息超时
+@property (nonatomic,strong)NSTimer * receiveMesgOutTimer;
+//总数据包
+@property (nonatomic,strong)NSData * binData;
 
 @property (nonatomic,assign)BOOL isDeviceUpdate; //主控芯片升级
 @property (nonatomic,assign)BOOL isBleUpdate; //固件升级
@@ -54,11 +56,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self setRightButtonTitle:@"测试"];
+    [self aspectTheUpdateStatus];
+    
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(connectOverTime:) name:kNotificationConnectDeviceOutTime object:nil];
 }
 
 - (void)setNavigationStyle{
     [self setNavigationTitle:NSLocalizedString(@"控制台", nil)];
+}
+
+- (void)onRightButtonClick:(id)sender{
+    [self sendPreCodeForDeviceUpdate];
 }
 
 #pragma  mark - 网络请求
@@ -94,8 +103,7 @@
         if (CODE==200) {
             
             NSString *deviceVersion = responseObject[@"d"][@"device_version"][@"version"]; //主控芯片版本号
-            
-            
+     
             NSString *link_version = responseObject[@"d"][@"link_version"][@"version"]; //固件升级
             //v1.0.0
             
@@ -150,6 +158,7 @@
 }
 
 - (void)aspectTheUpdateStatus{
+    self.currentRoundNumber = -1;
     [HNAspectsStore getDeviceUpdateStatus:^(BOOL isSuccess) {
         if (isSuccess == YES) {
             self.currentRoundNumber ++;
@@ -157,38 +166,83 @@
         }
     }];
 }
+#pragma  mark - 读取设备信息
+- (void)readDeviceInfo{
+    HNGetDeviceInfoCode *code = [HNGetDeviceInfoCode new];
+    code.cmd = @"01";
+    code.pkg1 = @"00";
+    code.pkg2 = @"00";
+    code.deviceType = [HNBLEConnectManager shareInstance].currentDevice.addressType;
+    code.macAddress = [HNBLEConnectManager shareInstance].currentDevice.macAddress;
+    code.info = @"01";
+    code.addressType = @"00";
+    [HNBLEDataManager sendData:code];
+}
+#pragma  mark - 蓝牙芯片升级
+- (void)sendPreCodeForDeviceUpdate{
+    NSString *hexStr = @"";
+
+    int total = 0 ;
+    for (int i = 0; i<self.binData.length; i++) {
+        NSData *currentData =  [self.binData subdataWithRange:NSMakeRange(i, 1)];
+        total += [[NSString hexStringToDecima:[NSString convertDataToHexStr:currentData]] intValue];
+    }
+    
+    //总和
+    NSString *totalHexStr = [NSString getHexByDecimal:total];
+    totalHexStr = [NSString getSmallModeString:totalHexStr length:8];
+    
+    //个数
+    NSString *gHexStr = [NSString getHexByDecimal:self.binData.length];
+    gHexStr = [NSString getSmallModeString:gHexStr length:6];
+    
+    HNPreUpdateCode *codeMode = [[HNPreUpdateCode alloc]init];
+    codeMode.cmd = @"15";
+    codeMode.pkg1 = @"00";
+    codeMode.pkg2 = @"00";
+    codeMode.totalString = totalHexStr;
+    codeMode.lengthString = gHexStr;
+    [HNBLEDataManager sendData:codeMode];
+
+}
 
 - (void)updateAction{
     
-    NSData *data = [[NSFileHandle fileHandleForReadingAtPath:[[NSBundle mainBundle] pathForResource:@"ssssss" ofType:@"bin"]] readDataToEndOfFile];
-    
     NSData *k4Data;
     if (self.currentRoundNumber == 0) {
-        k4Data = [data subdataWithRange:NSMakeRange(0, 1024*4)];
+        k4Data = [self.binData subdataWithRange:NSMakeRange(0, 1024*4)];
     }else{
-        if (data.length> 1024*4*self.currentRoundNumber+1024*4) {
-            k4Data = [data subdataWithRange:NSMakeRange(1024*4*self.currentRoundNumber, 1024*4)];
+        if (self.binData.length> 1024*4*self.currentRoundNumber+1024*4) { //
+            k4Data = [self.binData subdataWithRange:NSMakeRange(1024*4*self.currentRoundNumber, 1024*4)];
         }else{
-            k4Data = [data subdataWithRange:NSMakeRange(1024*4*self.currentRoundNumber, data.length - 1024*4*self.currentRoundNumber)];
+            k4Data = [self.binData subdataWithRange:NSMakeRange(1024*4*self.currentRoundNumber, self.binData.length - 1024*4*self.currentRoundNumber)];
         }
     }
     
-    //总轮次
-    NSInteger roundNumber = data.length%(1024*4)==0 ?((data.length/(1024*4))):((data.length/(1024*4))+1);
 
-    //最后一轮的包数
-    NSInteger lastPackage = (data.length - 1024*4*(roundNumber-1))%16==0?(data.length - 1024*4*(roundNumber-1))/16:(data.length - 1024*4*(roundNumber-1))/16+1;
     
-    //256 = 1024*4/16;
+    //总轮次
+    NSInteger roundNumber = self.binData.length%(1024*4)==0 ?((self.binData.length/(1024*4))):((self.binData.length/(1024*4))+1);
+    
+    NSInteger lastPackage = 0;
+    if ((self.binData.length-16) - 1024*4*(roundNumber-1) == 0 ) {
+        lastPackage = (1024*4-16)/17+1;
+    }else{
+        lastPackage = (self.binData.length - 1024*4*(roundNumber-1))/17+1;
+    }
+
+        
+    // = (1024*4-16)/17;
     //总包数=满包次数*256
-    self.totalNumber = (1024*4/16) * (roundNumber - 1) + lastPackage;
+    self.totalNumber = ((1024*4-16)/17+1) * (roundNumber - 1) + lastPackage;
     
     //每一轮的总包数
-    self.roundTotalNumber = ((NSInteger)k4Data.length % 16)== 0 ? (((NSInteger)k4Data.length / 16)) : (((NSInteger)k4Data.length / 16) +1);
+    self.roundTotalNumber = ((NSInteger)k4Data.length % 17)== 0 ? (((NSInteger)k4Data.length / 17)) : (((NSInteger)k4Data.length / 17) +1);
     
     __weak typeof (self)weakSelf = self;
    self.timer = [NSTimer mk_scheduledTimerWithTimeInterval:.01 repeats:YES block:^{
-       if (weakSelf.currentNumber>weakSelf.roundTotalNumber) {
+       if (weakSelf.currentNumber>weakSelf.roundTotalNumber) { //轮次的最后一包发完了
+           self.currentNumber = 0;
            [weakSelf.timer invalidate];
            weakSelf.timer = nil;
        }
@@ -196,67 +250,80 @@
     }];
 
 }
-
+- (void)receiveDataOutTimeAction{
+    //开启超时定时器
+    if (!self.receiveMesgOutTimer) {
+        _weakself;
+        self.receiveMesgOutTimer = [NSTimer mk_scheduledTimerWithTimeInterval:2 repeats:NO block:^{
+            DLog(@"***************接收数据超时了**********************");
+            //取消勾取数据
+            
+            [MBProgressHUD showError:NSLocalizedString(@"数据接收超时，请重试", nil)];
+            [weakself.receiveMesgOutTimer invalidate];
+            weakself.receiveMesgOutTimer = nil;
+            [weakself.timer invalidate];
+            weakself.timer = nil;
+        }];
+    }
+}
 - (void)sendPackage:(NSData *)data{
     
     NSUInteger packLoction;
     NSUInteger packLength;
     
-    if (self.currentNumber>self.roundTotalNumber) { //这一轮结束  再判断是否最后一轮
-        self.currentNumber = 0;
+    if (self.currentNumber==self.roundTotalNumber) { //这一轮结束  再判断是否最后一轮
+//        [self receiveDataOutTimeAction];
         
-        //判断是否是最后一轮
-//        if
+//        if(self.currentRoundNumber == self.roundTotalNumber){} //判断是否是最后一轮
         return;
     }
     
     if (self.currentNumber == self.roundTotalNumber) {
         packLength = 0;
     }else if (self.currentNumber == self.roundTotalNumber -1){
-        packLength = [data length] - self.currentNumber * 16;
+        packLength = [data length] - self.currentNumber * 17;
     }else{
-        packLength = 16;
+        packLength = 17;
     }
-    packLoction = self.currentNumber *16;
+    packLoction = self.currentNumber *17;
     
     //发送数据的地方
     NSData *sendDate = [data subdataWithRange:NSMakeRange(packLoction, packLength)];
 
-    [self sendPackage:sendDate];
+    [self sendData:sendDate Data4K:data];
     
     self.currentNumber ++;
     
 }
 
-- (void)sendData:(NSData *)data{
+- (void)sendData:(NSData *)data Data4K:(NSData *)data4K{
     
     NSMutableData *sendData = [NSMutableData data];
     
-    NSInteger currentIndex = self.totalNumber - self.currentRoundNumber*(1024*4/16)+self.currentNumber;
+    NSInteger currentIndex = self.totalNumber - self.currentRoundNumber*(1024*4/17)-self.currentNumber;
     
-    NSString *headStr = [NSString stringWithFormat:@"0F%@%@",[[NSString getHexByDecimal:currentIndex] substringWithRange:NSMakeRange(0, 2)],[[NSString getHexByDecimal:currentIndex] substringWithRange:NSMakeRange(2, 2)]];
-    
+    NSString *headStr = [NSString stringWithFormat:@"0F%@%@",[[NSString getHexByDecimal:currentIndex] substringWithRange:NSMakeRange(2, 2)],[[NSString getHexByDecimal:currentIndex] substringWithRange:NSMakeRange(0, 2)]];
     
     [sendData appendData:[NSString convertHexStrToData:headStr]];
     [sendData appendData:data];
     
     
-    //计算checkcode
-    NSString *hexStr = [NSString convertDataToHexStr:sendData];;
-    int totalNumber = 0;
-    for (int i =0; i<hexStr.length; i+=2) {
-        int sum = [[NSString hexStringToDecima:[hexStr substringWithRange:NSMakeRange(i, 2)]] intValue];
+    if (self.currentNumber == self.totalNumber-1) { //最后一包发送4K校验和
+        //计算checkcode
+        int totalNumber = 0;
         
-        totalNumber += sum;
+        for (int i =0; i<data4K.length; i+=2) {
+            totalNumber += [[NSString hexStringToDecima:[NSString convertDataToHexStr:[data4K subdataWithRange:NSMakeRange(i, 1)]]] intValue];
+        }
+        //转16进制
+        NSString * c = [NSString getHexByDecimal:totalNumber];
+        if (c.length>=2) {
+            // 拼接checkCode
+            NSData *s = [NSString convertHexStrToData:[c substringWithRange:NSMakeRange(c.length-2, 2)]];
+            [sendData appendData:s];
+        }
+    }
 
-    }
-    //转16进制
-    NSString * c = [NSString getHexByDecimal:totalNumber];
-    if (c.length>=2) {
-        // 拼接checkCode
-       NSData *s = [NSString convertHexStrToData:[c substringWithRange:NSMakeRange(c.length-2, 2)]];
-        [sendData appendData:s];
-    }
     DLog(@"sendData:%@",sendData);
     
     [[HNBLEConnectManager shareInstance]writeValueToDevice:sendData];
@@ -414,5 +481,16 @@
         _mbp = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     }
     return _mbp;
+}
+
+- (NSData *)binData{
+    if (!_binData) {
+        _binData = [[NSFileHandle fileHandleForReadingAtPath:[[NSBundle mainBundle] pathForResource:@"App_Updata" ofType:@"bin"]] readDataToEndOfFile];
+    }
+    return _binData;
+}
+
+- (void)dealloc{
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
 }
 @end

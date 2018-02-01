@@ -39,4 +39,14 @@
 // 16进制转10进制
 + (NSString *)hexStringToDecima:(NSString *)hexString;
 + (NSString *)padingZero:(NSString *)str length:(NSInteger)length;
+
+
+/**
+ 获取小模式str
+
+ @param str str description
+ @param length length description
+ @return return value description
+ */
++(NSString *)getSmallModeString:(NSString *)str length:(NSInteger)length;
 @end

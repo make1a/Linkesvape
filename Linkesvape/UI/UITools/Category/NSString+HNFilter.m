@@ -203,7 +203,7 @@
         range.length = 2;
     }
     
-    DLog(@"hexdata: %@", hexData);
+//    DLog(@"hexdata: %@", hexData);
     return hexData;
 }
 
@@ -335,6 +335,15 @@
     return code;
 }
 
+
++(NSString *)getSmallModeString:(NSString *)str length:(NSInteger)length{
+    str = [self padingZero:str length:length];
+    NSMutableString *string = [@"" mutableCopy];
+    for (int i = 0; i<str.length/2; i++) {
+        [string appendString:[str substringWithRange:NSMakeRange(length-2*(i+1), 2)]];
+    }
+    return string;
+}
 
 +(NSString *)stringFromHexString:(NSString *)hexString {
     

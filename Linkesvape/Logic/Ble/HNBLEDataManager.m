@@ -23,7 +23,7 @@
     switch (backCode) {
         case 0x1:
         {
-            
+            [self getDeviceInfoModel:data];
         }
             break;
         case 0x2:
@@ -34,17 +34,24 @@
         {
             [self getDeviceUpdataStatus:data];
         }
+            break;
+        case 0x15:
+        {
+            [self getDeviceUpdataStatus:data];
+        }
+            break;
+            
         default:
             break;
     }
 
-    [self getDeviceInfoModel:data];
+    
     
 }
 
 #pragma  mark - 被拦截的action
-+ (HNGetDeviceInfoCode *)getDeviceInfoModel:(NSData *)data{
-   HNGetDeviceInfoCode *code = [HNGetDeviceInfoCode AnalysisDataToModel:data BytesArray:@[@1,@1,@1,@1,@6,@1,@1]];
++ (HNDeviceInfoBackCode *)getDeviceInfoModel:(NSData *)data{
+   HNDeviceInfoBackCode *code = [HNDeviceInfoBackCode AnalysisDataToModel:data BytesArray:@[@1,@2,@4,@1,@1,@1]];
     DLog(@"%@",code);
     return code;
 }
@@ -75,22 +82,26 @@
 
         NSString *str = object_getIvar(model, ivar);
         
-        //补0
-        if (str.length%2 !=0) {
-            str  = [NSString padingZero:str length:str.length+1];
-        }
+        
+
 
         /********************计算checkCode*************************/
-        for (int j = 0; j<str.length; j+=2) {
-            //转10进制
-            int sum = [[NSString hexStringToDecima:[str substringWithRange:NSMakeRange(j, 2)]] intValue];
-
-            totalNumber += sum;
-//            DLog(@"sum ==%d  totalNumber =%d",sum,totalNumber);
+        if (i>2) {
+            //补0
+            if (str.length%2 !=0) {
+                str  = [NSString padingZero:str length:str.length+1];
+            }
+            
+            for (int j = 0; j<str.length; j+=2) {
+                //转10进制
+                int sum = [[NSString hexStringToDecima:[str substringWithRange:NSMakeRange(j, 2)]] intValue];
+                
+                totalNumber += sum;
+                //            DLog(@"sum ==%d  totalNumber =%d",sum,totalNumber);
+            }
         }
+
         /*********************************************/
-        
-        
         if (!str) {
             DLog(@"****************错误:还有属性没有赋值******************");
             return;

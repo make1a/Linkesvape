@@ -14,7 +14,6 @@
 
 + (void)getDeviceinfo:(void(^)(HNGetDeviceInfoCode *m))handler_block
 {
-    
     [object_getClass([HNBLEDataManager class]) aspect_hookSelector:@selector(getDeviceInfoModel:) withOptions:AspectPositionAfter usingBlock:^(id<AspectInfo> aspectInfo,NSData *data) {
         __unsafe_unretained HNGetDeviceInfoCode *model;
         [aspectInfo.originalInvocation getReturnValue:&model];
@@ -35,3 +34,4 @@
     } error:NULL];
 }
 @end
+

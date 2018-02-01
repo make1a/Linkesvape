@@ -47,6 +47,7 @@
 		263B57DE1FF6129B00E118DA /* HNNoticePlayListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 263B57DD1FF6129B00E118DA /* HNNoticePlayListView.m */; };
 		263B57EB1FF63A0C00E118DA /* HNConsoleMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 263B57EA1FF63A0C00E118DA /* HNConsoleMainViewController.m */; };
 		263B57EE1FF63B5600E118DA /* HNConsoleMainContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 263B57ED1FF63B5600E118DA /* HNConsoleMainContainerView.m */; };
+		2641E4A8202157B400FE029A /* App_Updata.bin in Resources */ = {isa = PBXBuildFile; fileRef = 2641E4A7202157B400FE029A /* App_Updata.bin */; };
 		2643FDE31FF329C300220F33 /* UIColor+HexString.m in Sources */ = {isa = PBXBuildFile; fileRef = 2643FDE21FF329C300220F33 /* UIColor+HexString.m */; };
 		2643FDE51FF3378C00220F33 /* SkinTheme.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2643FDE41FF3378C00220F33 /* SkinTheme.plist */; };
 		2643FE011FF33B3D00220F33 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2643FDE71FF33B3D00220F33 /* Info.plist */; };
@@ -81,6 +82,7 @@
 		26705F99200D99DA00624085 /* HNLaunchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 26705F98200D99DA00624085 /* HNLaunchVC.m */; };
 		26705F9C200D9A6800624085 /* AppDelegate+StarLogic.m in Sources */ = {isa = PBXBuildFile; fileRef = 26705F9B200D9A6800624085 /* AppDelegate+StarLogic.m */; };
 		26705FA1200DC93300624085 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 26705FA3200DC93300624085 /* Localizable.strings */; };
+		2687C5C92021983600AC5DA1 /* HNPreUpdateCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 2687C5C82021983600AC5DA1 /* HNPreUpdateCode.m */; };
 		2693D89F2016CE3000A55409 /* NSBundle+Language.m in Sources */ = {isa = PBXBuildFile; fileRef = 2693D89D2016CE3000A55409 /* NSBundle+Language.m */; };
 		269A70771FFB626B00F6853A /* HNConsoleMainHeadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 269A70761FFB626B00F6853A /* HNConsoleMainHeadView.m */; };
 		269A707A1FFB6E5800F6853A /* HNTableHedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 269A70791FFB6E5800F6853A /* HNTableHedView.m */; };
@@ -255,6 +257,7 @@
 		263B57EA1FF63A0C00E118DA /* HNConsoleMainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HNConsoleMainViewController.m; sourceTree = "<group>"; };
 		263B57EC1FF63B5600E118DA /* HNConsoleMainContainerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HNConsoleMainContainerView.h; sourceTree = "<group>"; };
 		263B57ED1FF63B5600E118DA /* HNConsoleMainContainerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HNConsoleMainContainerView.m; sourceTree = "<group>"; };
+		2641E4A7202157B400FE029A /* App_Updata.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = App_Updata.bin; sourceTree = "<group>"; };
 		2643FDE11FF329C300220F33 /* UIColor+HexString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIColor+HexString.h"; sourceTree = "<group>"; };
 		2643FDE21FF329C300220F33 /* UIColor+HexString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+HexString.m"; sourceTree = "<group>"; };
 		2643FDE41FF3378C00220F33 /* SkinTheme.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SkinTheme.plist; sourceTree = "<group>"; };
@@ -326,6 +329,8 @@
 		26705F9B200D9A6800624085 /* AppDelegate+StarLogic.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+StarLogic.m"; sourceTree = "<group>"; };
 		26705FA2200DC93300624085 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		26705FA4200DC94E00624085 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		2687C5C72021983600AC5DA1 /* HNPreUpdateCode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HNPreUpdateCode.h; sourceTree = "<group>"; };
+		2687C5C82021983600AC5DA1 /* HNPreUpdateCode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HNPreUpdateCode.m; sourceTree = "<group>"; };
 		2693D89D2016CE3000A55409 /* NSBundle+Language.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+Language.m"; sourceTree = "<group>"; };
 		2693D89E2016CE3000A55409 /* NSBundle+Language.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+Language.h"; sourceTree = "<group>"; };
 		269A70751FFB626B00F6853A /* HNConsoleMainHeadView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HNConsoleMainHeadView.h; sourceTree = "<group>"; };
@@ -800,6 +805,7 @@
 		269FA16C1FF1FE1100D4F844 = {
 			isa = PBXGroup;
 			children = (
+				2641E4A7202157B400FE029A /* App_Updata.bin */,
 				262BA9932019D9810010CFCE /* JQ_SDK14_DFU_APP_20180125_V1.5.0.zip */,
 				262BA9912019D9710010CFCE /* JQ_SDK14_DFU_APP_20180125_V1.4.0.zip */,
 				26705FA3200DC93300624085 /* Localizable.strings */,
@@ -1219,6 +1225,8 @@
 				26309E8E2015CF530075B69C /* HNDFUModel.m */,
 				262BA98E20197BA70010CFCE /* HNGetDeviceVersionCode.h */,
 				262BA98F20197BA70010CFCE /* HNGetDeviceVersionCode.m */,
+				2687C5C72021983600AC5DA1 /* HNPreUpdateCode.h */,
+				2687C5C82021983600AC5DA1 /* HNPreUpdateCode.m */,
 			);
 			path = CodeModel;
 			sourceTree = "<group>";
@@ -1365,6 +1373,7 @@
 				262B239D200F34B5000A31B3 /* b.png in Resources */,
 				263241431FFCC99C009D3B04 /* HNConsoleSliderCell.xib in Resources */,
 				26D3F06F1FF489D700650678 /* HNMainTableHeadView.xib in Resources */,
+				2641E4A8202157B400FE029A /* App_Updata.bin in Resources */,
 				262B2399200F348C000A31B3 /* a.png in Resources */,
 				262BA9942019D9810010CFCE /* JQ_SDK14_DFU_APP_20180125_V1.5.0.zip in Resources */,
 				26309E8C2015CCA60075B69C /* HNOTACell.xib in Resources */,
@@ -1609,6 +1618,7 @@
 				2643FE0E1FF345FA00220F33 /* HNLoginTextFieldView.m in Sources */,
 				269FA54E1FF1FEB800D4F844 /* HNBaseBankView.m in Sources */,
 				269FA55B1FF1FEB800D4F844 /* GTMBase64.m in Sources */,
+				2687C5C92021983600AC5DA1 /* HNPreUpdateCode.m in Sources */,
 				2643FE171FF34D9A00220F33 /* HNRegisterTextfieldView.m in Sources */,
 				269A707A1FFB6E5800F6853A /* HNTableHedView.m in Sources */,
 				269A70771FFB626B00F6853A /* HNConsoleMainHeadView.m in Sources */,

@@ -46,7 +46,5 @@
     return mac;
 }
 
-
-
-
 @end
+

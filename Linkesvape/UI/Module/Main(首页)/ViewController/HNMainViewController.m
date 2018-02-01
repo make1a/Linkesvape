@@ -65,13 +65,13 @@
 - (void)onRightButtonClick:(id)sender{
 
     HNGetDeviceInfoCode *code = [HNGetDeviceInfoCode new];
-    code.cmd = @"01";
+    code.cmd = @"00";
     code.pkg1 = @"00";
     code.pkg2 = @"00";
     code.deviceType = @"01";
     code.macAddress = [HNBLEConnectManager shareInstance].currentDevice.macAddress;
-    code.info = @"01";
-    code.addressType = @"00";
+    code.info = @"00";
+    code.addressType =[HNBLEConnectManager shareInstance].currentDevice.addressType;
     [HNBLEDataManager sendData:code];
     
 }

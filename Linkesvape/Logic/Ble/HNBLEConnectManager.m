@@ -154,7 +154,7 @@ NSString *const kNotificationConnectDeviceOutTime = @"kNotificationConnectDevice
     //过滤器
     //设置查找设备的过滤器
     [self.baby setFilterOnDiscoverPeripherals:^BOOL(NSString *peripheralName, NSDictionary *advertisementData, NSNumber *RSSI) {
-        DLog(@"peripheralName====%@",peripheralName);
+//        DLog(@"peripheralName====%@",peripheralName);
         
         if (self.isOTA == YES) {
             if ([peripheralName isEqualToString:@"EDVAPE_DFU"]) {
@@ -179,7 +179,7 @@ NSString *const kNotificationConnectDeviceOutTime = @"kNotificationConnectDevice
     //设置扫描到设备的委托
     [self.baby setBlockOnDiscoverToPeripherals:^(CBCentralManager *central, CBPeripheral *peripheral, NSDictionary *advertisementData, NSNumber *RSSI) {
 //        DLog(@"搜索到了设备:%@",peripheral);
-        DLog(@"ader ======== %@",advertisementData);
+//        DLog(@"ader ======== %@",advertisementData);
         
         if (weakself.isOTA == YES) {
             //OTA模式

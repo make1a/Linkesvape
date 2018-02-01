@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+
+
 @interface HNGetDeviceInfoCode : NSObject
 //命令格式：该命令共有9个有效字节，共分为一包传给设备
 
@@ -45,6 +47,8 @@
 
 /**命令码*/
 @property (nonatomic,copy)NSString * cmd;
+//包数
+@property (nonatomic,copy)NSString * pkg;
 /**设备ID*/
 @property (nonatomic,copy)NSString * deviceId;
 /**设备软件版本信息低位*/
